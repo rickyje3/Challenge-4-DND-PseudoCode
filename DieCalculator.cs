@@ -8,43 +8,74 @@ public class DieCalculator : MonoBehaviour
     public int conScore;
     public bool isDwarf;
     public bool isTough;
-    public int healthPoints;
     public int playerLevel;
     public string playerName;
     public bool isHPAveraged;
 
     private int consScoreMod;
+    private int hitdie;
+    private int healthPoints = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        math();
+        Debug.Log("My Hit Point value is " + healthPoints);
     }
 
     // Update is called once per frame
     void Update()
     {
-        {
-            Debug.Log("My character " + playerName + " is a level " + playerLevel + playerClass + " with a CON score of " + conScore);
-            Debug.Log("My Hit Point value is " + healthPoints);
-        }
 
-        void fixedDiceRoll()
+    }
+    void fixedDiceRoll()
+    {
+        //This will generate the average of the character classes hit die.
+        int x = classes[playerClass];
+        int y = 0;
+        int z = 0;
+        while (y <= x)
         {
-            //This will generate the average of the character classes hit die.
-            isHPAveraged = false;
+            y++;
+            z = y + z;
         }
-
-        void randomDiceRoll()
+        int average = z / x;
+        healthPoints = healthPoints + (average * playerLevel);
+    }
+    void randomDiceRoll()
+    {
+        int i = 0;
+        hitdie = classes[playerClass];
+        //This will generate a random die value that is added to your characters hit die
+        while (i <= playerLevel)
         {
-            //This will generate a random die value that is added to your characters hit die
-            isHPAveraged = true;
+            int dice = Random.Range(1, hitdie);
+            healthPoints = healthPoints + dice;
+            i++;
         }
     }
-  
+
     void math()
     {
         consScoreMod = abilityScoreModifier[conScore - 1, 1];
+        healthPoints = healthPoints + consScoreMod;
+        if (isDwarf == true)
+        {
+            healthPoints = healthPoints + 1;
+        }
+        if (isTough == true)
+        {
+            healthPoints = healthPoints + 2;
+        }
+        if (isHPAveraged == false)
+        {
+            randomDiceRoll();
+        }
+        if (isHPAveraged == true)
+        {
+            fixedDiceRoll();
+        }
+
     }
 
 void classHealthBoosts()
